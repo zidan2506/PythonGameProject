@@ -1,5 +1,5 @@
-import random
 def poker():
+    import random
     ranks = list(range(2,15))
     # suits = ['C','D','H','S']  #C -> Clubs, D-> Diamonds, H-> Hearts, S -> Spades
     ranks_string = {11: 'J',12: 'Q',13: 'K',14: 'A'}
