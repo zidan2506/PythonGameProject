@@ -1,4 +1,9 @@
 def poker():
+    """
+    Poker demo (2 players) with ASCII card rendering and basic hand evaluation.
+    Notes:
+    - Ranking tuple shape varies across categories; see `CATEGORY_NAME`.
+    """
     import random
     ranks = list(range(2,15))
     # suits = ['C','D','H','S']  #C -> Clubs, D-> Diamonds, H-> Hearts, S -> Spades
@@ -21,6 +26,13 @@ def poker():
 
     # Pack of cards
     def new_pack():
+        """
+        Build a standard 52-card pack.
+
+        Returns:
+            list[tuple[int, str]]: List of cards where each card is (rank, suit),
+            rank in [2..14] (14 = Ace), suit in {'♣','♦','♥','♠'}.
+        """
         deck = []
         for suit in suits:
             for rank in ranks:
@@ -32,10 +44,31 @@ def poker():
     # a = random.choice(pack_of_cards)
 
     def card_str(card):
+        """
+           Convert a card tuple to a short human-readable string.
+
+           Args:
+               card (tuple[int, str]): The card as (rank, suit).
+
+           Returns:
+               str: e.g., "A♠", "10♦", "J♥".
+           """
         r, s = card
         return f"{ranks_string.get(r, r)}{s}"
 
     def deal(n):
+        """
+           Pop and return n cards from the global shuffled pack.
+
+           Args:
+               n (int): Number of cards to deal.
+
+           Returns:
+               list[tuple[int, str]]: A list of n cards (rank, suit).
+
+           Side Effects:
+               Mutates `pack_of_cards` by popping from the end.
+           """
         return [pack_of_cards.pop() for _ in range(n)]
     your_cards = deal(2)
     # print(your_cards)
@@ -46,10 +79,22 @@ def poker():
 
     # print(' - '.join(card_str(i)for i in your_cards)) -> Card output
     def show(x):
+
         y = (' - '.join(card_str(c) for c in x))
         return y
     ##Draw
     def ascii_card(rank, suit):
+        """
+          Render a single card as a list of ASCII-art lines.
+
+          Args:
+              rank (int): 2..14 (11=J,12=Q,13=K,14=A).
+              suit (str): One of {'♣','♦','♥','♠'}.
+
+          Returns:
+              list[str]: 5 lines forming a boxed ASCII card.
+                         Use together with `show_hand` to print side-by-side.
+          """
         suit_symbol = {
             '♠': '♠',
             '♥': '♥',
@@ -68,6 +113,15 @@ def poker():
         ]
 
     def show_hand(cards):
+        """
+          Print multiple ASCII cards side-by-side.
+
+          Args:
+              cards (list[tuple[int, str]]): Cards to render, each (rank, suit).
+
+          Output:
+              Prints to stdout the combined ASCII-art of all cards.
+          """
         ascii_cards = [ascii_card(r, s) for (r, s) in cards]
         for row in zip(*ascii_cards):
             print("  ".join(row))
@@ -148,6 +202,24 @@ def poker():
 
     # print('r=',r)
     def straight():
+        """
+         Detect straight or straight flush from player's 7 cards.
+
+         Logic:
+             - Check straight flush/royal flush by scanning ranks within any flush suit.
+             - Then check normal straight using unique sorted ranks.
+             - Straight wheel (A-2-3-4-5) is NOT considered.
+
+         Returns:
+             tuple:
+                 (kind, high, sequence)
+                 - kind (str): 'Royal Flush', 'Straight Flush', 'Normal straight', or 'Not Straight'
+                 - high (int): Highest rank of the straight (e.g., 14 for A-high), or a fallback top rank.
+                 - sequence (list[int]): Ranks of the found straight window, or the unique rank list when not found.
+
+         Notes:
+             Uses outer-scope variables `your_whole` and `flush`.
+         """
         for fs in flush:
             suit_ranks = sorted({rr for (rr, ss) in your_whole if ss == fs}, reverse=True) #To get the number with the same suit by flush
             for i in range(len(suit_ranks) - 4):
@@ -256,6 +328,9 @@ def poker():
     rbot.sort(reverse=True)
     # print('r=',r)
     def straightbot():
+        """
+        Same logic with straight() function.
+        """
         for fs in flushbot:
             suit_ranks = sorted({rr for (rr, ss) in bot_whole if ss == fs}, reverse=True)
             for i in range(len(suit_ranks) - 4):
@@ -329,5 +404,3 @@ def poker():
     # print('rankbot=',rankbot)
     # show(bot_cards)
 poker()
-
-
