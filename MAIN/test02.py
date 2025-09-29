@@ -1,4 +1,13 @@
-def poker():
+import random
+
+from MAIN.main_pokemon_file import show_poke
+from all_pokemon_list import Arceus
+from all_pokemon_list import NU_Poke
+from all_pokemon_list import OU_Poke
+from all_pokemon_list import Uber_Poke
+from MAIN import main_pokemon_file
+
+def poker(player1,player2):
     """
     Poker demo (2 players) with ASCII card rendering and basic hand evaluation.
     Notes:
@@ -393,14 +402,71 @@ def poker():
     print(f'You have got a/an {CATEGORY_NAME.get(rank[0])}')
     print(f'Bot has got a/an {CATEGORY_NAME.get(rankbot[0])}')
     print(f'Bot Cards: {show(bot_cards)}')
+
     #Comparison
     if rank[0:] > rankbot[0:]:
         print("Congratulations! You won!")
+        into_team2( player1, player2,None)
+        # show_poke(main_pokemon_file.Sam)
+        # print('Kari')
+        # show_poke(main_pokemon_file.Kari)
     elif rank[0:] < rankbot[0:]:
         print("Hahahaha Loserrrr ")
+        lose_poke(player1 ,player2 )
+
     elif rank[0:] == rankbot[0:]:
         print('DRAWW')
-    # print('rank =',rank)
-    # print('rankbot=',rankbot)
-    # show(bot_cards)
-poker()
+        a = input("Do you wanna play again? (y/n)")
+        if a == 'y':
+            poker(player1, player2)
+        elif a == 'n':
+            print("Fine")
+
+def into_team2(player, opo, wild):
+    """
+    The inner function used for stealing or capturing Pokemon, the function
+    creates a loop until you enter 0 that allows you to move the opposing
+    pokemon into your team, and moves excess Pokemon into the wild list
+    :param player: player
+    :param opo: opponent whose team to check, write None if capturing wild Pokemon
+    :param wild: wild pokemon, write None if battling human NPC
+    :return: None
+    """
+    if wild == None:
+        print("Which Pokemon would you like to add to your team?")
+        for index_o, poke_o in enumerate(opo.team):
+            print(f"{index_o + 1}. {poke_o.name}")
+        # print(f"0. End")
+        user_input_opo = input("Select your choice: ")
+
+        if user_input_opo.isdigit(): ##.isdigit is used to check if user_input_opo is a number or not (don't care about Error value)
+            user_input_opo = int(user_input_opo)
+            if 0 < user_input_opo <= len(opo.team):
+                print("Which Pokemon from your team would you like to release?")
+                for index_p, poke_p in enumerate(player.team):
+                    print(f"{index_p + 1}. {poke_p.name}")
+                # print(f"0. End")
+                user_input_player = int(input("Select your choice: "))
+
+                if 0 < user_input_player <= len(player.team):
+                    player.team[user_input_player - 1] = opo.team[user_input_opo - 1]
+                    opo.team.remove(opo.team[user_input_opo - 1])
+                    main_pokemon_file.wild_poke.append(player.team[user_input_player - 1])
+def lose_poke(player,opo):
+    print("The opponent gonna take 1 pokemon from your team")
+    if len(player.team) > 0:
+        take = random.choice(player.team)
+        player.team.remove(take)
+        opo.team.append(take)
+a = main_pokemon_file.Sam
+b = main_pokemon_file.Kari
+poker(a,b)
+# show_poke(main_pokemon_file.Sam)
+# print('Kari')
+# show_poke(main_pokemon_file.Kari)
+# a = main_pokemon_file.Sam
+# b = main_pokemon_file.Kari
+# poker(a, b)
+
+
+# lose_poke(a,b)
