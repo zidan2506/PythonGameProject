@@ -152,3 +152,5 @@ Kari = Human("Kari", "exec")
 def show_poke(player):
     for poke in player.team:
         print(f"{poke.name}")
+
+
